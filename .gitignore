@@ -1,0 +1,32 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Eclipse
+.metadata/
+.settings/
+.project
+.classpath
+.apt_generated/
+.factorypath
+bin/
+
+# Java build output
+*.class
+target/
+build/
+
+# Apache Tomcat
+*.log
+catalina.out
+
+# VS Code
+.vscode/
+
+# Archives / editor backups
+*.zip
+*~
+
+# Course handouts / installers (provided by the instructor, not redistributed)
+*.pdf
+*.exe
