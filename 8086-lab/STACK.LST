@@ -1,0 +1,124 @@
+Microsoft (R) Macro Assembler Version 5.10                  10/4/26 18:08:10
+                                                             Page     1-1
+
+
+ = 000D				CR	equ 0dh
+ = 000A				LF	equ 0ah
+				
+ 0000				sseg segment para stack 'stack'
+ 0000  0064[			    db 64h dup(?)
+	   ??			
+			 ]	
+				
+ 0064				sseg ends
+				
+				;----------------------
+ 0000				dseg segment
+ 0000  53 74 61 63 6B 20	data1 db 'Stack Test',CR,LF,'$'
+       54 65 73 74 0D 0A	
+       24			
+ 000D				dseg ends
+				
+				;----------------------
+ 0000				cseg segment
+ 0000				main proc far
+				    assume ss:sseg, ds:dseg, cs:cseg
+				
+ 0000  B8 ---- R		    mov ax, dseg
+ 0003  8E D8			    mov ds, ax
+				
+ 0005  B8 1234			    mov ax, 1234h	; ax ·¹Áö½ºÅÍ¿¡ 1234h °
+				ª ³ÖÀ½
+ 0008  BA 5678			    mov dx, 5678h	; dx ·¹Áö½ºÅÍ¿¡ 5678h °
+				ª ³ÖÀ½
+				
+				;------  DS:DXÀÇ ³»¿ëÀ» È­¸é¿¡ ¿¬¼ÓÃâ·Â('$' ¸¸³
+				¯¶§±îÁö) --- 
+ 000B  50			    push ax		; ax ³»¿ëÀ» ½ºÅÃ¿¡ ÀúÀå
+ 000C  52			    push dx		; dx ³»¿ëÀ» ½ºÅÃ¿¡ ÀúÀå
+				
+				;    mov ah, 09
+				;    mov dx, offset data1
+				;    int 21h		;DOS Function Call ½ÇÇà
+				
+ 000D  FC			    cld			;ÀÚµ¿Áõ°¡ ¼ø¹æÇâ ¼³Á¤
+ 000E  BE 0000 R		    mov si, offset data1
+				
+ 0011				display_loop:
+ 0011  AC			    lodsb		;al <- ds:si & si <- si
+				+1 = ÀÚµ¿Áõ°¡ ¾îµå·¹½Ì ¸ðµå
+ 0012  3C 24			    cmp al,'$'
+ 0014  74 08			    je    display_end	;if $ then exit loop   
+				    
+ 0016  8A D0			    mov dl,al
+ 0018  B4 02			    mov ah,02h
+ 001A  CD 21			    int   21h            ;Dispay DL 
+ 001C  EB F3			    jmp display_loop
+				
+ 001E				display_end:
+Microsoft (R) Macro Assembler Version 5.10                  10/4/26 18:08:10
+                                                             Page     1-2
+
+
+ 001E  5A			    pop  dx		; ½ºÅÃ¿¡ ÀúÀåµÈ dx¸¦ º¹
+				¿ø
+ 001F  58			    pop  ax		; ½ºÅÃ¿¡ ÀúÁ¤µÈ ax¸¦ º¹
+				¿ø
+				
+				; ----- pop ¸í·ÉÀº ¸ÕÀú push µÈ ¼ø¼­·Î ¸ÕÀú ²¨³
+				»Áø´Ù 
+ 0020  50			    push ax		; ax = 1234h
+ 0021  52			    push dx		; dx = 5678h
+ 0022  B8 0000			    mov  ax,0
+ 0025  BA 0000			    mov  dx,0
+ 0028  58			    pop  ax		; ³ªÁß¿¡ ÀúÀåµÈ 5678h°¡
+				 ax·Î º¹¿ø
+ 0029  5A			    pop  dx		; ±× ÀÌÀü¿¡ ÀúÀåµÈ 1234
+				h°¡ dx·Î
+				
+				;-------  ÇÁ·Î±×·¥ Á¾·á -------------------
+ 002A  B4 4C			    mov ah, 4ch
+ 002C  CD 21			    int 21h			;ÇÁ·Î±×·¥ Á¾·á 
+				   
+ 002E				main endp
+ 002E				cseg ends
+				    end main
+Microsoft (R) Macro Assembler Version 5.10                  10/4/26 18:08:10
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CSEG . . . . . . . . . . . . . .  	002E	PARA	NONE	
+DSEG . . . . . . . . . . . . . .  	000D	PARA	NONE	
+SSEG . . . . . . . . . . . . . .  	0064	PARA	STACK	'STACK'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+CR . . . . . . . . . . . . . . .  	NUMBER	000D	
+
+DATA1  . . . . . . . . . . . . .  	L BYTE	0000	DSEG
+DISPLAY_END  . . . . . . . . . .  	L NEAR	001E	CSEG
+DISPLAY_LOOP . . . . . . . . . .  	L NEAR	0011	CSEG
+
+LF . . . . . . . . . . . . . . .  	NUMBER	000A	
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0000	CSEG	Length = 002E
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  stack		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     63 Source  Lines
+     63 Total   Lines
+     15 Symbols
+
+  48008 + 461283 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

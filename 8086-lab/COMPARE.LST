@@ -1,0 +1,309 @@
+Microsoft (R) Macro Assembler Version 5.10                  10/4/26 18:30:06
+                                                             Page     1-1
+
+
+				
+				; 다음의 수식을 8086 어셈블리어를 작성한 경우 
+				;if (a<b) {
+				;   x = 5;
+				;   y = c+d;
+				;}
+				;else x = c-d;
+				
+ = 000D				CR	equ	0dh
+ = 000A				LF	equ	0ah
+				
+				;----------------------
+ 0000				sseg segment para stack 'stack'
+ 0000  0064[			    db 64h dup(?)
+	   ??			
+			 ]	
+				
+ 0064				sseg ends
+				
+				;----------------------
+ 0000				dseg segment
+				
+ 0000  02			value_a	db 2
+ 0001  01			value_b	db 1
+ 0002  04			value_c	db 4
+ 0003  03			value_d	db 3
+				
+ 0004  00			value_x	db 0
+ 0005  00			value_y	db 0
+				
+ 0006  20 69 66 20 61 20	msg_start	db ' if a < b -> x=5 & y=c+d',C
+				R,LF
+       3C 20 62 20 2D 3E	
+       20 78 3D 35 20 26	
+       20 79 3D 63 2B 64	
+       0D 0A			
+ 0020  20 20 20 20 65 6C	 		db '    else -> x=c-d',CR,LF,'$
+				'
+       73 65 20 2D 3E 20	
+       78 3D 63 2D 64 0D	
+       0A 24			
+				
+ 0034  0D 0A 43 20 3D 20	msg_c		db CR,LF, 'C = $'
+       24			
+ 003B  2C 20 44 20 3D 20	msg_d		db ', D = $'
+       24			
+ 0042  2C 20 58 20 3D 20	msg_x		db ', X = $'
+       24			
+ 0049  2C 20 59 20 3D 20	msg_y		db ', Y = $'
+       24			
+				
+ 0050  0D 0A 58 20 3D 20	msg_x_out	db CR,LF,'X = $'
+       24			
+				
+Microsoft (R) Macro Assembler Version 5.10                  10/4/26 18:30:06
+                                                             Page     1-2
+
+
+ 0057  0D 0A 69 6E 70 75	msg_a_in	db CR,LF,'input value for a :$'
+       74 20 76 61 6C 75	
+       65 20 66 6F 72 20	
+       61 20 3A 24		
+ 006D  0D 0A 69 6E 70 75	msg_b_in	db CR,LF,'input value for b :$'
+       74 20 76 61 6C 75	
+       65 20 66 6F 72 20	
+       62 20 3A 24		
+				
+				
+ 0083  0D 0A 61 20 3E 3D	msg_ge  	db CR,LF,'a >= b$'
+       20 62 24			
+ 008C  0D 0A 61 20 3C 20	msg_les 	db CR,LF,'a < b$'
+       62 24			
+				
+ 0094				dseg ends
+				;----------------------
+ 0000				cseg segment
+ 0000				main proc far
+				    assume ss:sseg, ds:dseg, cs:cseg
+				
+ 0000  B8 ---- R		    mov ax, dseg
+ 0003  8E D8			    mov ds, ax		;set Data Segment
+				
+				;------------  display message "Condition " ---
+				---------
+ 0005  B4 09			    mov ah,09			;ah=09: disp st
+				ring from dx
+ 0007  BA 0006 R		    mov dx, offset msg_start
+ 000A  CD 21			    int 21h			;DOS Function C
+				all 실행
+				
+				;------------  display message "C = " ---------
+				---
+ 000C  B4 09			    mov ah,09			;ah=09: disp st
+				ring from dx
+ 000E  BA 0034 R		    mov dx, offset msg_c
+ 0011  CD 21			    int 21h			;DOS Function C
+				all 실행
+				;---- display value 'c'  ----------------------
+				-----    
+ 0013  8A 16 0002 R		    mov dl,value_c
+ 0017  80 C2 30			    add  dl,'0'	 
+ 001A  B4 02			    mov ah,02h
+ 001C  CD 21			    int   21h            ;Dispay DL
+				;------------  display message "D = " ---------
+				---
+ 001E  B4 09			    mov ah,09			;ah=09: disp st
+				ring from dx
+ 0020  BA 003B R		    mov dx, offset msg_d
+ 0023  CD 21			    int 21h			;DOS Function C
+				all 실행
+				;---- display value 'd'  ----------------------
+				-----        
+Microsoft (R) Macro Assembler Version 5.10                  10/4/26 18:30:06
+                                                             Page     1-3
+
+
+ 0025  8A 16 0003 R		    mov dl,value_d
+ 0029  80 C2 30			    add  dl,'0'	 
+ 002C  B4 02			    mov ah,02h
+ 002E  CD 21			    int   21h            ;Dispay DL 
+				;------------  display message "X = " ---------
+				---
+ 0030  B4 09			    mov ah,09			;ah=09: disp st
+				ring from dx
+ 0032  BA 0042 R		    mov dx, offset msg_x
+ 0035  CD 21			    int 21h			;DOS Function C
+				all 실행
+				;---- display value 'x'  ----------------------
+				-----    
+ 0037  8A 16 0004 R		    mov dl,value_x
+ 003B  80 C2 30			    add  dl,'0'	 
+ 003E  B4 02			    mov ah,02h
+ 0040  CD 21			    int   21h            ;Dispay DL
+				;------------  display message "Y = " ---------
+				---
+ 0042  B4 09			    mov ah,09			;ah=09: disp st
+				ring from dx
+ 0044  BA 0049 R		    mov dx, offset msg_y
+ 0047  CD 21			    int 21h			;DOS Function C
+				all 실행
+				;---- display value 'y'  ----------------------
+				-----        
+ 0049  8A 16 0005 R		    mov dl,value_y
+ 004D  80 C2 30			    add  dl,'0'	 
+ 0050  B4 02			    mov ah,02h
+ 0052  CD 21			    int   21h            ;Dispay DL 
+				
+				;------------  display message "Input a" ------
+				-----
+ 0054  B4 09			    mov ah,09			;ah=09: disp st
+				ring from dx
+ 0056  BA 0057 R		    mov dx, offset msg_a_in
+ 0059  CD 21			    int 21h			;DOS Function C
+				all 실행
+				;--------  get value a from KBD ---------------
+				---	
+ 005B  B4 01			    mov ah,01
+ 005D  CD 21			    int 21h			;get calue(al) 
+				from KBD
+ 005F  2C 30			    sub	al,'0'			;convert ASCii 
+				-> value
+ 0061  A2 0000 R		    mov ds:value_a,al		;save value a
+				;------------  display message "Input b" ------
+				-----
+ 0064  B4 09			    mov ah,09			;ah=09: disp st
+				ring from dx
+ 0066  BA 006D R		    mov dx, offset msg_b_in
+ 0069  CD 21			    int 21h			;DOS Function C
+				all 실행
+				;--------  get value b from KBD ---------------
+Microsoft (R) Macro Assembler Version 5.10                  10/4/26 18:30:06
+                                                             Page     1-4
+
+
+				---		
+ 006B  B4 01			    mov ah,01
+ 006D  CD 21			    int 21h			;get calue(al) 
+				from KBD
+ 006F  2C 30			    sub	al,'0'			;convert ASCii 
+				-> value
+ 0071  A2 0001 R		    mov ds:value_b,al		;save value a
+				
+ 0074  A0 0000 R		    mov al, ds:value_a	; al <- a 값
+ 0077  3A 06 0001 R		    cmp al, ds:value_b	; a값 >= b값
+ 007B  73 15			    jae case_a_large_equal	; 크거나 같으면
+				 점프
+				 	
+				 ;-----   a 값이 b 보다 작은 경우 -------------
+				--
+				
+ 007D  C6 06 0004 R 05		    mov value_x,5
+ 0082  A0 0002 R		    mov al, value_c
+ 0085  02 06 0003 R		    add al, value_d
+ 0089  A2 0005 R		    mov value_y, al		; y <- c + d
+ 008C  BA 008C R		    mov dx, offset msg_les
+ 008F  EB 0E 90			    jmp end_point
+				
+				;-----   a 값이 b 보다 크거나 같은 경우 -------
+				--------
+ 0092				case_a_large_equal:
+ 0092  A0 0002 R		    mov al, value_c
+ 0095  2A 06 0003 R		    sub al, value_d
+ 0099  A2 0004 R		    mov value_x, al		; x <- c - d
+ 009C  BA 0083 R		    mov dx, offset msg_ge
+				
+ 009F				end_point:
+ 009F  B4 09			    mov ah,09                   ;ah=09: disp st
+				ring from dx
+ 00A1  CD 21			    int 21h			;DOS Function C
+				all 실행
+				
+				;------------  display message "X = " ---------
+				---
+ 00A3  B4 09			    mov ah,09			;ah=09: disp st
+				ring from dx
+ 00A5  BA 0050 R		    mov dx, offset msg_x_out
+ 00A8  CD 21			    int 21h			;DOS Function C
+				all 실행
+				;---- display value 'x'  ----------------------
+				-----    
+ 00AA  8A 16 0004 R		    mov dl,value_x
+ 00AE  80 C2 30			    add  dl,'0'	 
+ 00B1  B4 02			    mov ah,02h
+ 00B3  CD 21			    int   21h            ;Dispay DL
+				;------------  display message "Y = " ---------
+				---
+ 00B5  B4 09			    mov ah,09			;ah=09: disp st
+				ring from dx
+Microsoft (R) Macro Assembler Version 5.10                  10/4/26 18:30:06
+                                                             Page     1-5
+
+
+ 00B7  BA 0049 R		    mov dx, offset msg_y
+ 00BA  CD 21			    int 21h			;DOS Function C
+				all 실행
+				;---- display value 'y'  ----------------------
+				-----        
+ 00BC  8A 16 0005 R		    mov dl,value_y
+ 00C0  80 C2 30			    add  dl,'0'	 
+ 00C3  B4 02			    mov ah,02h
+ 00C5  CD 21			    int   21h            ;Dispay DL 
+				
+				;-----------  Program End ---------------------
+				---
+ 00C7  B4 4C			    mov ah, 4ch
+ 00C9  CD 21			    int 21h			;프로그램 종료 
+				
+ 00CB				main endp
+ 00CB				cseg ends
+				    end main
+Microsoft (R) Macro Assembler Version 5.10                  10/4/26 18:30:06
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CSEG . . . . . . . . . . . . . .  	00CB	PARA	NONE	
+DSEG . . . . . . . . . . . . . .  	0094	PARA	NONE	
+SSEG . . . . . . . . . . . . . .  	0064	PARA	STACK	'STACK'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+CASE_A_LARGE_EQUAL . . . . . . .  	L NEAR	0092	CSEG
+CR . . . . . . . . . . . . . . .  	NUMBER	000D	
+
+END_POINT  . . . . . . . . . . .  	L NEAR	009F	CSEG
+
+LF . . . . . . . . . . . . . . .  	NUMBER	000A	
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0000	CSEG	Length = 00CB
+MSG_A_IN . . . . . . . . . . . .  	L BYTE	0057	DSEG
+MSG_B_IN . . . . . . . . . . . .  	L BYTE	006D	DSEG
+MSG_C  . . . . . . . . . . . . .  	L BYTE	0034	DSEG
+MSG_D  . . . . . . . . . . . . .  	L BYTE	003B	DSEG
+MSG_GE . . . . . . . . . . . . .  	L BYTE	0083	DSEG
+MSG_LES  . . . . . . . . . . . .  	L BYTE	008C	DSEG
+MSG_START  . . . . . . . . . . .  	L BYTE	0006	DSEG
+MSG_X  . . . . . . . . . . . . .  	L BYTE	0042	DSEG
+MSG_X_OUT  . . . . . . . . . . .  	L BYTE	0050	DSEG
+MSG_Y  . . . . . . . . . . . . .  	L BYTE	0049	DSEG
+
+VALUE_A  . . . . . . . . . . . .  	L BYTE	0000	DSEG
+VALUE_B  . . . . . . . . . . . .  	L BYTE	0001	DSEG
+VALUE_C  . . . . . . . . . . . .  	L BYTE	0002	DSEG
+VALUE_D  . . . . . . . . . . . .  	L BYTE	0003	DSEG
+VALUE_X  . . . . . . . . . . . .  	L BYTE	0004	DSEG
+VALUE_Y  . . . . . . . . . . . .  	L BYTE	0005	DSEG
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  compare		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+    164 Source  Lines
+    164 Total   Lines
+     30 Symbols
+
+  47956 + 453143 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

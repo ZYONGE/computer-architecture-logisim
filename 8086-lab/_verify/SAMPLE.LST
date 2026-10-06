@@ -1,0 +1,110 @@
+Microsoft (R) Macro Assembler Version 5.10                  10/4/26 15:07:06
+                                                             Page     1-1
+
+
+ = 000D				CR	equ 0dh
+ = 000A				LF	equ 0ah
+				
+ 0000				sseg segment para stack 'stack'
+ 0000  0064[			    db 64h dup(?)
+	   ??			
+			 ]	
+				
+ 0064				sseg ends
+				;----------------------
+ 0000				dseg segment
+ 0000  50 72 6F 67 72 61	data1 db 'Program terminated by hit "!"',CR,LF
+       6D 20 74 65 72 6D	
+       69 6E 61 74 65 64	
+       20 62 79 20 68 69	
+       74 20 22 21 22 0D	
+       0A			
+ 001F  48 65 6C 6C 6F 20	         db 'Hello 8086 CPU!',CR,LF
+       38 30 38 36 20 43	
+       50 55 21 0D 0A		
+ 0030  4D 79 20 6E 61 6D	         db 'My name is ', '$'
+       65 20 69 73 20 24	
+ 003C				dseg ends
+				;----------------------
+ 0000				cseg segment
+ 0000				main proc far
+				    assume ss:sseg, ds:dseg, cs:cseg
+				
+ 0000  B8 ---- R		    mov ax, dseg
+ 0003  8E D8			    mov ds, ax
+				
+				;------  DS:DXÀÇ ³»¿ëÀ» È­¸é¿¡ ¿¬¼ÓÃâ·Â('$' ¸¸³
+				¯¶§±îÁö) --- 
+ 0005  B4 09			    mov ah, 09
+ 0007  BA 0000 R		    mov dx, offset data1
+ 000A  CD 21			    int 21h		;DOS Function Call ½ÇÇà
+				;------  Get 1 character from KBD w/o echo ----
+				------    
+ 000C				read_loop:
+ 000C  B4 07			     mov ah,07h
+ 000E  CD 21			     int   21h            ;Read 1 char from KBD
+				 (AL)
+				;------ if input = '!' then exit program ------
+				------
+ 0010  3C 21			     cmp al,'!'
+ 0012  74 08			     je  exit_program 
+				;------ Display character ---------------------
+				-
+ 0014  8A D0			     mov dl,al
+ 0016  B4 02			     mov ah,02h
+ 0018  CD 21			     int   21h            ;Display DL 
+ 001A  EB F0			     jmp read_loop
+				
+				;-------  ÇÁ·Î±×·¥ Á¾·á -------------------
+Microsoft (R) Macro Assembler Version 5.10                  10/4/26 15:07:06
+                                                             Page     1-2
+
+
+ 001C				exit_program:
+ 001C  B4 4C			    mov ah, 4ch
+ 001E  CD 21			    int 21h			;ÇÁ·Î±×·¥ Á¾·á 
+				   
+ 0020				main endp
+ 0020				cseg ends
+				    end main
+Microsoft (R) Macro Assembler Version 5.10                  10/4/26 15:07:06
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CSEG . . . . . . . . . . . . . .  	0020	PARA	NONE	
+DSEG . . . . . . . . . . . . . .  	003C	PARA	NONE	
+SSEG . . . . . . . . . . . . . .  	0064	PARA	STACK	'STACK'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+CR . . . . . . . . . . . . . . .  	NUMBER	000D	
+
+DATA1  . . . . . . . . . . . . .  	L BYTE	0000	DSEG
+
+EXIT_PROGRAM . . . . . . . . . .  	L NEAR	001C	CSEG
+
+LF . . . . . . . . . . . . . . .  	NUMBER	000A	
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0000	CSEG	Length = 0020
+
+READ_LOOP  . . . . . . . . . . .  	L NEAR	000C	CSEG
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  sample		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     45 Source  Lines
+     45 Total   Lines
+     15 Symbols
+
+  47994 + 461297 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

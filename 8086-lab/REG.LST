@@ -1,0 +1,72 @@
+Microsoft (R) Macro Assembler Version 5.10                  10/4/26 18:04:57
+                                                             Page     1-1
+
+
+ 0000				sseg segment para stack 'stack'
+ 0000  0064[			    db 64h dup(?)
+	   ??			
+			 ]	
+				
+ 0064				sseg ends
+				
+				;----------------------
+ 0000				dseg segment
+ 0000				dseg ends
+				
+				;----------------------
+				
+ 0000				cseg segment
+ 0000				main proc far
+				    assume ss:sseg, ds:dseg, cs:cseg
+				
+ 0000  B0 02			    mov  al,2			; al 레지스터에
+				 2 설정 
+ 0002				re_check:  
+ 0002  FE C8			    dec  al         		; al 1 감소
+ 0004  75 FC			    jnz  re_check 	        ; al<>0 이면 반
+				복
+ 0006  90			    nop
+				
+				;-------  프로그램 종료 -------------------
+ 0007				exit_program:
+ 0007  B4 4C			    mov ah, 4ch
+ 0009  CD 21			    int 21h			;프로그램 종료 
+				   
+ 000B				main endp
+ 000B				cseg ends
+				    end main
+Microsoft (R) Macro Assembler Version 5.10                  10/4/26 18:04:57
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CSEG . . . . . . . . . . . . . .  	000B	PARA	NONE	
+DSEG . . . . . . . . . . . . . .  	0000	PARA	NONE	
+SSEG . . . . . . . . . . . . . .  	0064	PARA	STACK	'STACK'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+EXIT_PROGRAM . . . . . . . . . .  	L NEAR	0007	CSEG
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0000	CSEG	Length = 000B
+
+RE_CHECK . . . . . . . . . . . .  	L NEAR	0002	CSEG
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  reg		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     28 Source  Lines
+     28 Total   Lines
+     12 Symbols
+
+  48064 + 463275 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

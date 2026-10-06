@@ -1,0 +1,8 @@
+ if a < b -> x=5 & y=c+d
+    else -> x=c-d
+
+C = 4, D = 3, X = 0, Y = 0
+input value for a :
+input value for b :
+a < b
+X = 5, Y = 7
